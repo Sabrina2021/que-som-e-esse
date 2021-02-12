@@ -1,0 +1,206 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Que som é esse?</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" type="text/css" href="font/material-icons.css"> 
+</head>
+<body>
+  <section class="inicio">
+    <h1>QUE SOM É ESSE?</h1>    
+    <button>INICIAR</button>
+  </section> <!-- end .inicio -->
+
+  <section class="dois_sons">  
+    <header>
+      <p>LEVEL 1- Duas músicas</p>
+      <p>
+        <span class="mticons">alarm</span> 
+        00:<span class="tempo">00</span>
+      </p>
+
+    </header>
+    <div>
+      <h1>QUE SOM É ESSE?</h1>
+      <ul>
+        <li class="errado1">Part Of Me</li>
+        <li class="certo1">Olhos Castanhos</li>
+        <li class="errado1">Linda</li>
+        <li class="certo1">She Looks So Perfect</li>
+        <li class="errado1">Pouca Pausa</li>
+      </ul>
+    </div>
+
+  </section><!-- end .flg  .dois_sons  -->
+
+  <section class="tres_sons">
+    <header>
+
+      <p>LEVEL 2- Três músicas</p>
+      <p>
+        <span class="mticons">alarm</span> 
+        00:<span class="tempo">00</span>
+      </p>
+
+    </header>
+    <div>
+      <h1>QUE SOM É ESSE?</h1>
+      <ul>
+        <li class="certo2">Believer</li>
+        <li class="errado2">Beautiful Girl</li>
+        <li class="certo2">Love On The Brain</li>
+        <li class="errado2">Amnesia</li>
+        <li class="certo2">Dona De Mim</li>
+      </ul>
+    </div>
+
+  </section><!-- end .flg  .tres_sons  -->
+
+  <section class="final">
+    <p><span class="resultado"></span></p> 
+    <p class="paragrafo">Tempo: <span class="tempo-final"></span> <br>
+                        Erros: <span class="erro-final"></span> </p>
+    
+     <button>VOLTAR</button>
+  </section>
+ 
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    var musica1 = new Audio('musica/Olhos Castanhos.mp3');
+    var musica2 = new Audio('musica/She Looks So Perfect.mp3');
+    var musica3 = new Audio('');
+
+    var audio = new Audio('');
+
+    var cronometro;
+
+    $("section.inicio button").on("click", function(){
+
+      clearInterval(cronometro);
+      $("span.tempo").text("00");
+      acertos = 0;
+      
+      musica2.volume = 0.5;
+      musica1.play();
+      musica2.play();
+
+      $("section").hide();
+      $("section.dois_sons").show();
+
+      cronometro = setInterval(function(){
+        var tempo = parseInt($("section.dois_sons header p span.tempo").text());
+        var soma = tempo + 1;
+        if(soma < 10) {
+          soma = "0" + soma;
+        }
+        $("span.tempo").text(soma);
+      }, 1000);
+    });
+    
+      var acertos = 0;
+      $("section.dois_sons ul li.certo1").on("click", function(){
+        acertos++;
+        $(this).css({opacity: 0.5});
+        audio = new Audio('musica/correct.mp3');
+        audio.play();
+          
+        if(acertos > 1){
+          $("section").hide();
+          $("section.tres_sons").show();
+
+          musica1.load();
+          musica2.load();
+          musica3.load();
+
+          musica1 = new Audio('musica/Believer.mp3');
+          musica2 = new Audio('musica/Love On The Brain.mp3');
+          musica3 = new Audio('musica/Dona De Mim.mp3');
+
+          musica1.volume = 0.4;
+          musica3.volume = 0.6;
+
+          musica1.play();
+          musica2.play();
+          musica3.play();
+
+          acertos = 0;
+        }
+      });
+
+      $("section.tres_sons ul li.certo2").on("click", function(){
+        acertos++;
+        $(this).css({opacity: 0.5});
+        audio = new Audio('musica/correct.mp3');
+        audio.play();
+          
+        var tempoFinal = 0;
+        if(acertos > 2){
+          $("section").hide();
+          $("section.final").show();
+
+          tempoFinal = parseInt($("section.tres_sons header p span.tempo").text());
+          clearInterval(cronometro);
+
+          musica1.load();
+          musica2.load();
+          musica3.load();
+
+          musica1.pause();
+          musica2.pause();
+          musica3.pause();
+
+          $("section.final p span.erro-final").text(erros);
+
+          if(tempoFinal < 20 || erros < 3){
+            $("section.final p span.resultado").text("Parabéns! Você foi muito bem!");
+          }else if((tempoFinal > 20 && tempoFinal < 40) || (erros < 5 && erros > 2)){
+            $("section.final p span.resultado").text("Você ainda pode melhorar!");
+          }else if(tempoFinal > 60 || erros > 4){
+            $("section.final p span.resultado").text("Você foi péssimo!!");
+          }
+
+          if(tempoFinal < 10){
+            $("section.final p span.tempo-final").text("00:0" + tempoFinal);
+          }else{
+            $("section.final p span.tempo-final").text("00:" + tempoFinal);
+          }
+        }
+      });
+      
+      var erros = 0;
+
+      $("section.dois_sons ul li.errado1").one("click", function(){
+          erros++;
+          $(this).css({opacity: 0.5});
+          audio = new Audio('musica/error2.mp3');
+          audio.play();
+      });
+
+      $("section.tres_sons ul li.errado2").one("click", function(){
+          erros++;
+          $(this).css({opacity: 0.5});
+          audio = new Audio('musica/error2.mp3');
+          audio.play();
+         
+      });
+
+      $("section.final button").on("click", function(){
+        location.reload();
+      });
+
+  </script>
+  
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>
